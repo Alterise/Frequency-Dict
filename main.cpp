@@ -6,12 +6,14 @@
 #include <string>
 #include <vector>
 
+#include <tbb/concurrent_hash_map.h>
+
 std::vector<std::string> get_lines(const std::string& input) {
     std::ifstream input_file(input);
 
     if (!input_file.is_open()) {
         std::cerr << "Failed to open input_file: " << input << std::endl;
-        return;
+        return {};
     }
 
     std::vector<std::string> lines;
@@ -49,7 +51,7 @@ void calculate_frequency(const std::string& input, const std::string& output) {
         return;
     }
     
-    calculate_frequency_internal(output, lines);
+    calculate_frequency_internal(lines);
 }
 
 int main(int argc, char *argv[]) {
