@@ -6,6 +6,14 @@
 #include <vector>
 
 #include <tbb/parallel_for.h>
+// #include <tbb/parallel_for_each.h>
+#include <tbb/concurrent_hash_map.h>
+
+struct MyBody {
+    void operator()(const std::string& line, tbb::concurrent_hash_map<std::string, long long>& cmap ) {
+        
+    }
+};
 
 std::vector<std::string> get_lines(const std::string& input) {
     std::ifstream input_file(input);
@@ -26,11 +34,22 @@ std::vector<std::string> get_lines(const std::string& input) {
     return std::move(lines);
 }
 
-void calculate_frequency_internal(const std::vector<std::string>& lines) {
-    
+tbb::concurrent_hash_map<std::string, long long> calculate_frequency_internal(const std::vector<std::string>& lines) {
+    tbb::concurrent_hash_map<std::string, long long> cmap;
+    tbb::concurrent_hash_map<std::string, long long>::accessor accessor;
+    tbb::parallel_for(0, static_cast<int>(lines.size()), 1, [&cmap, &accessor, &lines](long long i){
+        const auto& line = lines[i];
+        if (cmap.find(accessor, line)) {
+            accessor->second++;
+        } else {
+            cmap.emplace(accessor, line, 1);
+        }
+    });
+
+    return std::move(cmap);
 }
 
-void put_frequencies(const std::string& output, void* _) {
+void put_frequencies(const std::string& output, const tbb::concurrent_hash_map<std::string, long long>& cmap) {
     std::ofstream output_file(output);
 
     if (!output_file.is_open()) {
@@ -38,8 +57,10 @@ void put_frequencies(const std::string& output, void* _) {
         return;
     }
 
-    // TODO: 
-
+    for (const auto &elem : cmap) {
+        output_file << elem.first << " " << elem.second << std::endl;
+    }
+    
     output_file.close();
 }
 
@@ -50,7 +71,9 @@ void calculate_frequency(const std::string& input, const std::string& output) {
         return;
     }
     
-    calculate_frequency_internal(lines);
+    auto cmap = calculate_frequency_internal(lines);
+
+    put_frequencies(output, cmap);
 }
 
 int main(int argc, char *argv[]) {
