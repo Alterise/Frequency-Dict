@@ -2,11 +2,7 @@
 #include <fstream>
 #include <sstream>
 #include <chrono>
-#include <thread>
 #include <string>
-#include <vector>
-
-#include <tbb/concurrent_hash_map.h>
 
 std::vector<std::string> get_lines(const std::string& input) {
     std::ifstream input_file(input);
@@ -55,13 +51,13 @@ void calculate_frequency(const std::string& input, const std::string& output) {
 }
 
 int main(int argc, char *argv[]) {
-    if (argc != 3) {
-        std::cerr << "Use: ./freq [input_file] [output_file]" << std::endl;
-        return 0;
-    }
+    // if (argc != 3) {
+    //     std::cerr << "Use: ./freq [input_file] [output_file]" << std::endl;
+    //     return 0;
+    // }
 
-    auto start = std::chrono::steady_clock::now();
-    calculate_frequency(argv[1], argv[2]);
-    auto end = std::chrono::steady_clock::now();
-    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
+    // auto start = std::chrono::steady_clock::now();
+    // calculate_frequency(argv[1], argv[2]);
+    // auto end = std::chrono::steady_clock::now();
+    // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
 }
