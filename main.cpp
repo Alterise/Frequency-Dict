@@ -1,6 +1,6 @@
 #include <iostream>
 #include <fstream>
-#include <chrono>
+// #include <chrono>
 #include <string>
 
 #include <tbb/parallel_for.h>
@@ -57,7 +57,6 @@ tbb::concurrent_vector<std::pair<std::string, long long>> calculate_frequency_in
                     cmap.insert({result, 1});
                 }
             }
-            
 
             start = next + 1;
             next = std::find(start, end, ' ');
@@ -102,7 +101,6 @@ void put_frequencies(const std::string& output, const tbb::concurrent_vector<std
 void calculate_frequency(const std::string& input, const std::string& output) {
     auto lines = get_lines(input);
     if (lines.empty()) {
-        std::cerr << "Aborting output: " << input << std::endl;
         return;
     }
 
@@ -117,8 +115,8 @@ int main(int argc, char *argv[]) {
         return 0;
     }
 
-    auto start = std::chrono::steady_clock::now();
+    // auto start = std::chrono::steady_clock::now();
     calculate_frequency(argv[1], argv[2]);
-    auto end = std::chrono::steady_clock::now();
-    std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
+    // auto end = std::chrono::steady_clock::now();
+    // std::cout << std::chrono::duration_cast<std::chrono::milliseconds>(end - start).count() << "ms" << std::endl;
 }
