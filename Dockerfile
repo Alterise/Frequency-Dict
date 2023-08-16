@@ -2,7 +2,7 @@ FROM gcc:latest as build
 
 RUN apt-get update && \
     apt-get install -y \
-      libtbb \
+      libtbb-dev \
       cmake
 
 ADD CMakeLists.txt main.cpp /app/src/
@@ -10,12 +10,9 @@ ADD CMakeLists.txt main.cpp /app/src/
 WORKDIR /app/build
 
 RUN cmake ../src && \
-    cmake --build .
+    cmake --build . && \
+    mv ./freq ..
 
-FROM ubuntu:latest
-
-WORKDIR /app
-
-COPY --from=build /app/build/freq .
+workdir /app
 
 ENTRYPOINT ["./freq"]
